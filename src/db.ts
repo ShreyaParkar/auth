@@ -1,18 +1,21 @@
 import mongoose, { Mongoose } from "mongoose";
 
-const MONGODB_URL = process.env.MONGODB_URL!;
+const MONGODB_URL = process.env.MONGODB_URL;
+
+if (!MONGODB_URL) {
+  throw new Error("Missing MONGODB_URL in environment variables");
+}
 
 interface MongooseConn {
   conn: Mongoose | null;
   promise: Promise<Mongoose> | null;
 }
 
-// ✅ Use `globalThis` instead of `any`
+// ✅ Use `globalThis` to persist connection across hot reloads
 declare global {
   var mongooseGlobal: MongooseConn | undefined;
 }
 
-// ✅ Use global caching to prevent multiple DB connections
 let cached: MongooseConn = globalThis.mongooseGlobal || { conn: null, promise: null };
 
 export const connect = async (): Promise<Mongoose> => {
@@ -27,8 +30,7 @@ export const connect = async (): Promise<Mongoose> => {
     });
 
   cached.conn = await cached.promise;
-
-  globalThis.mongooseGlobal = cached; // ✅ Store in global cache
+  globalThis.mongooseGlobal = cached;
 
   return cached.conn;
 };

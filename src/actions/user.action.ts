@@ -1,6 +1,6 @@
 "use server";
 
-import User from "@/modal/ticket.modal"; // ✅ Corrected import path
+import User from "@/models/ticket.model"; // ✅ Ensure correct model path
 import { connect } from "@/db";
 
 interface UserProps {
@@ -8,10 +8,11 @@ interface UserProps {
   email: string;
 }
 
-export async function createUser(userData: UserProps) { // ✅ Explicit Type
+export async function createUser(userData: UserProps) {
   try {
     await connect();
-    const newUser = await User.create(userData); // ✅ Corrected Model Usage
+    const newUser = new User(userData); // ✅ Correct model instantiation
+    await newUser.save();
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
     console.error("Error creating user:", error);
