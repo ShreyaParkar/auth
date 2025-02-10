@@ -1,12 +1,12 @@
-"use client"; // Mark this as a client component
+"use client"; // ✅ Mark as client component
 
 import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
 import Button from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const { userId } = useAuth();
-  const router = useRouter();
+  const { userId } = useAuth(); // ✅ Keep authentication check
+  const router = useRouter(); // ✅ Keep manual navigation
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary relative">
@@ -29,10 +29,10 @@ export default function Home() {
           <div className="flex gap-4 justify-center mt-8">
             {!userId ? (
               <>
-                <SignInButton mode="modal" redirectUrl="/ticket">
+                <SignInButton mode="modal">
                   <Button size="lg">Sign In</Button>
                 </SignInButton>
-                <SignUpButton mode="modal" redirectUrl="/ticket">
+                <SignUpButton mode="modal">
                   <Button size="lg" variant="outline">
                     Sign Up
                   </Button>
@@ -65,7 +65,7 @@ export default function Home() {
             Join thousands of commuters who have already switched to our digital bus pass system.
           </p>
           {!userId && (
-            <SignUpButton mode="modal" redirectUrl="/ticket">
+            <SignUpButton mode="modal">
               <Button size="lg" className="px-8">Create Your Account</Button>
             </SignUpButton>
           )}
